@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">📋 All Bookings</h2>
+
+{% if bookings %}
+<table class="table table-hover bg-white rounded shadow-sm">
+  <thead class="table-dark">
+    <tr>
+      <th>#</th><th>User</th><th>Equipment</th>
+      <th>Date</th><th>Time</th><th>Status</th><th>Booked At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for b in bookings %}
+    <tr>
+      <td>{{ b.booking_id }}</td>
+      <td>{{ b.user_name }}</td>
+      <td>{{ b.equipment }}</td>
+      <td>{{ b.date }}</td>
+      <td>{{ b.start_time.strftime('%H:%M') }} – {{ b.end_time.strftime('%H:%M') }}</td>
+      <td>
+        <span class="badge bg-{{ 'success' if b.status == 'confirmed' else 'secondary' }}">
+          {{ b.status }}
+        </span>
+      </td>
+      <td><small>{{ b.booked_at.strftime('%d %b %Y, %H:%M') }}</small></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <div class="alert alert-info">No bookings yet.</div>
+{% endif %}
+{% endblock %}

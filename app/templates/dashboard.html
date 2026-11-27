@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">🔧 Maintenance Dashboard</h2>
+
+<!-- Maintenance status cards -->
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+{% for log in logs %}
+  <div class="col">
+    <div class="card border-{{ 'danger' if log.flag_triggered else 'success' }} h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ log.equip_name }}</h5>
+        <p class="mb-1">⏱ <strong>{{ log.total_run_hours }}</strong> / {{ log.threshold }} hrs</p>
+        {% if log.flag_triggered %}
+          <span class="badge bg-danger">🚨 MAINTENANCE REQUIRED</span>
+          <p class="mt-2 mb-0 text-danger">
+            <small>{{ log.hours_over_threshold }} hrs over threshold</small>
+          </p>
+        {% else %}
+          <span class="badge bg-success">✅ OK</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+<!-- Recent usage log -->
+<h4>📋 Recent Usage Logs (from MongoDB)</h4>
+<table class="table table-sm table-hover bg-white rounded shadow-sm">
+  <thead class="table-dark">
+    <tr>
+      <th>Equipment</th><th>Date</th>
+      <th>Time</th><th>Hours</th><th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in recent %}
+    <tr>
+      <td>{{ r.equip_name }}</td>
+      <td>{{ r.date }}</td>
+      <td>{{ r.start_time }} – {{ r.end_time }}</td>
+      <td>{{ r.run_hours }}h</td>
+      <td><small>{{ r.notes }}</small></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

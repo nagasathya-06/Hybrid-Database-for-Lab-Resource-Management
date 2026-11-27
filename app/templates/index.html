@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">🔬 Available Equipment</h2>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+{% for e in equipment %}
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ e.name }}</h5>
+        <p class="text-muted mb-1">{{ e.model }}</p>
+        <p class="mb-1"><small>🏢 {{ e.department }}</small></p>
+        <p class="mb-2">
+          <span class="badge
+            {% if e.status == 'available' %}bg-success
+            {% elif e.status == 'maintenance' %}bg-danger
+            {% else %}bg-warning text-dark{% endif %}">
+            {{ e.status.upper() }}
+          </span>
+        </p>
+        <p class="mb-0"><small>⏱ {{ e.run_hours_total }} / {{ e.maintenance_threshold_hrs }} hrs</small></p>
+
+        <!-- Progress bar for run hours -->
+        <div class="progress mt-2" style="height:6px">
+          <div class="progress-bar
+            {% if e.run_hours_total >= e.maintenance_threshold_hrs %}bg-danger
+            {% elif e.run_hours_total >= e.maintenance_threshold_hrs * 0.8 %}bg-warning
+            {% else %}bg-success{% endif %}"
+            style="width: {{ [((e.run_hours_total / e.maintenance_threshold_hrs) * 100)|int, 100]|min }}%">
+          </div>
+        </div>
+      </div>
+      <div class="card-footer bg-transparent">
+        {% if e.status == 'available' %}
+          <a href="/book/{{ e.equip_id }}" class="btn btn-primary btn-sm w-100">Book a Slot</a>
+        {% else %}
+          <button class="btn btn-secondary btn-sm w-100" disabled>Unavailable</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}
